@@ -167,9 +167,9 @@ export const templates: Template[] = [
     ],
     format: (v) =>
       `### :clipboard: NEW SPRINT PLAN\n\n` +
-      `**Sprint Number:** Sprint ${v.sprintNumber}\n` +
-      `**Duration:** ${v.duration}\n` +
-      `**Sprint Goal:**\n${bulletList(v.sprintGoals)}`,
+      `**:rocket: Sprint Number:** Sprint ${v.sprintNumber}\n\n` +
+      `**:hourglass_flowing_sand: Duration:** ${v.duration}\n\n` +
+      `**:dart: Sprint Goal:**\n${bulletList(v.sprintGoals)}`,
   },
 
   {
@@ -223,14 +223,31 @@ export const templates: Template[] = [
         placeholder: "One point per line",
         required: true,
       },
+      {
+        kind: "paragraph",
+        id: "actionItems",
+        label: "Action Items",
+        placeholder: "One item per line",
+        required: true,
+      },
+      {
+        kind: "short",
+        id: "author",
+        label: "Author",
+        placeholder: "Surname, First Name M.I.",
+        required: true,
+      },
     ],
     format: (v) =>
       `### :clipboard: MINUTES OF THE MEETING\n\n` +
       `**:date: Date & Time:** ${formatNow()}\n` +
       `**:busts_in_silhouette: Attendees:**\n${bulletList(v.attendees)}\n` +
-      `**:dart: Topic(s):**\n${bulletList(v.topics)}\n\n` +
-      `---\n\n` +
-      `### :mag: KEY DISCUSSION POINTS\n${bulletList(v.keyPoints)}`,
+      `**:dart: Topic(s):**\n${bulletList(v.topics)}` +
+      `---` +
+      `### :mag: KEY DISCUSSION POINTS\n${bulletList(v.keyPoints)}\n\n` +
+      `### :white_check_mark: ACTION ITEMS\n${bulletList(v.actionItems)}` +
+      `---` +
+      `> :pencil2: **Minutes prepared by:** ${v.author}`,
   },
 
   {
