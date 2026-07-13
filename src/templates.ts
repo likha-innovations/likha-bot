@@ -241,11 +241,12 @@ export const templates: Template[] = [
     format: (v) =>
       `### :clipboard: MINUTES OF THE MEETING\n\n` +
       `**:date: Date & Time:** ${formatNow()}\n` +
-      `**:busts_in_silhouette: Attendees:**\n${bulletList(v.attendees)}\n` +
-      `**:dart: Topic(s):**\n${bulletList(v.topics)}\n` +
-      `---\n` +
+      `**:busts_in_silhouette: Attendees:**\n${bulletList(v.attendees)}\n\n` +
+      `**:dart: Topic(s):**\n${bulletList(v.topics)}\n\n` +
+      `---\n\n` +
       `### :mag: KEY DISCUSSION POINTS\n${bulletList(v.keyPoints)}\n\n` +
-      `### :white_check_mark: ACTION ITEMS\n${bulletList(v.actionItems)}\n` +
+      `---\n\n` +
+      `### :white_check_mark: ACTION ITEMS\n${bulletList(v.actionItems)}\n\n` +
       `---\n` +
       `> :pencil2: **Minutes prepared by:** ${v.author}`,
   },
