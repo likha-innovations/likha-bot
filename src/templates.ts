@@ -40,8 +40,20 @@ export const templates: Template[] = [
     modalTitle: "Official Announcement",
     fields: [
       { kind: "short", id: "title", label: "Announcement Title", required: true },
-      { kind: "paragraph", id: "what", label: "WHAT? (What is the announcement about)", required: true },
-      { kind: "paragraph", id: "who", label: "WHO? (Mention roles, members, or names)", required: true },
+      {
+        kind: "paragraph",
+        id: "what",
+        label: "WHAT? (What is the announcement about)",
+        placeholder: "One point per line",
+        required: true,
+      },
+      {
+        kind: "paragraph",
+        id: "who",
+        label: "WHO? (Mention roles, members, or names)",
+        placeholder: "One entry per line",
+        required: true,
+      },
       {
         kind: "short",
         id: "when",
@@ -49,18 +61,21 @@ export const templates: Template[] = [
         placeholder: "Day, Month 00, Year 00:00 AM/PM - 00:00 AM/PM",
         required: true,
       },
-      { kind: "short", id: "where", label: "WHERE? (Platform or location)", required: true },
+      {
+        kind: "paragraph",
+        id: "where",
+        label: "WHERE? (Platform or location)",
+        placeholder: "One entry per line",
+        required: true,
+      },
     ],
     format: (v) =>
       `### :loudspeaker: OFFICIAL ANNOUNCEMENT: ${v.title}\n` +
       `**:mag: OVERVIEW (The 5Ws):**\n` +
-      `:question: **WHAT:**\n  * ${v.what}\n\n` +
-      `:bust_in_silhouette: **WHO:**\n${bulletList(v.who)
-        .split("\n")
-        .map((l) => `  ${l}`)
-        .join("\n")}\n\n` +
+      `:question: **WHAT:**\n${bulletList(v.what)}\n\n` +
+      `:bust_in_silhouette: **WHO:**\n${bulletList(v.who)}\n\n` +
       `:date: **WHEN:**\n  * ${v.when}\n\n` +
-      `:round_pushpin: **WHERE:**\n  * ${v.where}`,
+      `:round_pushpin: **WHERE:**\n${bulletList(v.where)}`,
   },
 
   {
@@ -73,7 +88,7 @@ export const templates: Template[] = [
       {
         kind: "paragraph",
         id: "assignedTo",
-        label: "Assigned To (Mention roles, members, or names)",
+        label: "Assigned To (roles, members, or names)",
         placeholder: "@Name (Role) — one per line",
         required: true,
       },

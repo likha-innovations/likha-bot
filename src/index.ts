@@ -17,34 +17,46 @@ client.once(Events.ClientReady, (c) => {
 });
 
 client.on(Events.InteractionCreate, async (interaction) => {
-  // Slash command typed -> show that template's single modal.
-  if (interaction.isChatInputCommand()) {
-    const template = templates.find((t) => t.commandName === interaction.commandName);
-    if (!template) return;
+  try {
+    // Slash command typed -> show that template's single modal.
+    if (interaction.isChatInputCommand()) {
+      const template = templates.find((t) => t.commandName === interaction.commandName);
+      if (!template) return;
 
-    await interaction.showModal(buildModal(template.commandName));
-    return;
-  }
-
-  // Modal submitted -> read every field, format, and post as a plain chat message.
-  if (interaction.isModalSubmit()) {
-    const commandName = parseCustomId(interaction.customId);
-    if (!commandName) return;
-
-    const template = templates.find((t) => t.commandName === commandName);
-    if (!template) return;
-
-    const values: Record<string, string> = {};
-    for (const field of template.fields) {
-      values[field.id] = readField(interaction, field);
+      await interaction.showModal(buildModal(template.commandName));
+      return;
     }
 
-    // Discord chat messages cap out at 2000 characters (embeds get 4096,
-    // but we're posting plain content now).
-    const content = template.format(values).slice(0, 2000);
+    // Modal submitted -> read every field, format, and post as a plain chat message.
+    if (interaction.isModalSubmit()) {
+      const commandName = parseCustomId(interaction.customId);
+      if (!commandName) return;
 
-    await interaction.reply({ content });
-    return;
+      const template = templates.find((t) => t.commandName === commandName);
+      if (!template) return;
+
+      const values: Record<string, string> = {};
+      for (const field of template.fields) {
+        values[field.id] = readField(interaction, field);
+      }
+
+      // Discord chat messages cap out at 2000 characters (embeds get 4096,
+      // but we're posting plain content now).
+      const content = template.format(values).slice(0, 2000);
+
+      await interaction.reply({ content });
+      return;
+    }
+  } catch (err) {
+    // Without this, a bug in a template (e.g. a modal label over Discord's
+    // 45-character limit) throws before any response is sent, and Discord
+    // just shows "The application did not respond" with no clue why.
+    console.error("Interaction failed:", err);
+    if (interaction.isRepliable() && !interaction.replied && !interaction.deferred) {
+      await interaction
+        .reply({ content: "Something went wrong handling that. Check the bot logs for details.", ephemeral: true })
+        .catch(() => {});
+    }
   }
 });
 
