@@ -131,7 +131,7 @@ export const templates: Template[] = [
       },
     ],
     format: (v) =>
-      `###TASK ASSIGNMENT: ${v.taskName}\n\n` +
+      `### :pencil: TASK ASSIGNMENT: ${v.taskName}\n` +
       `**Description:**\n* ${v.description}\n\n` +
       `**Assigned To:**\n${bulletList(v.assignedTo)}\n\n` +
       `**Deadline:**\n* ${v.deadline}`,
@@ -187,10 +187,10 @@ export const templates: Template[] = [
     ],
     format: (v) =>
       `### :rotating_light: MEETING NOTICE: ${v.topic}\n\n` +
-      `**:date: Schedule:**\n* **Date:** ${v.date}\n\n` +
-      `**:timer: Time Allocation**\n* ${v.timeAllocation}\n\n` +
-      `**:pencil: Meeting Agenda:**\n${bulletList(v.agenda)}\n\n` +
-      `**:warning: Reminders:**\n${bulletList(v.reminders)}`,
+      `**Schedule:**\n* **Date:** ${v.date}\n\n` +
+      `**Time Allocation**\n* ${v.timeAllocation}\n\n` +
+      `**Meeting Agenda:**\n${bulletList(v.agenda)}\n\n` +
+      `**Reminders:**\n${bulletList(v.reminders)}`,
   },
 
   {
@@ -288,12 +288,12 @@ export const templates: Template[] = [
         label: "Meeting Type",
         required: true,
         options: [
+          { label: "Scrum Planning", value: "Scrum Planning" },
           { label: "Daily Scrum", value: "Daily Scrum" },
+          { label: "Scrum Retrospective", value: "Scrum Retrospective" },
           { label: "Weekly Meeting", value: "Weekly Meeting" },
           { label: "Realignment", value: "Realignment" },
           { label: "Emergency", value: "Emergency" },
-          { label: "Scrum Retrospective", value: "Scrum Retrospective" },
-          { label: "Scrum Planning", value: "Scrum Planning" },
         ],
       },
       {
@@ -322,12 +322,12 @@ export const templates: Template[] = [
       `### :clipboard: MINUTES OF THE MEETING\n\n` +
       `**Date & Time:** ${formatNow()}\n` +
       `**Attendees:**\n${bulletList(v.attendees)}\n` +
-      `**Meeting Type:** ${v.meetingType}\n` +
-      `---\n` +
-      `###KEY DISCUSSION POINTS\n${bulletList(v.keyPoints)}\n` +
-      `---\n` +
-      `###ACTION ITEMS\n${bulletList(v.actionItems)}\n\n` +
-      `---\n` +
+      `**Meeting Type:** ${v.meetingType}\n\n` +
+      `---\n\n` +
+      `*Key Discussion Points*\n${bulletList(v.keyPoints)}\n\n` +
+      `---\n\n` +
+      `*Action Items*\n${bulletList(v.actionItems)}\n\n` +
+      `---\n\n` +
       `> :pencil2: **Minutes prepared by:** ${v.author}`,
   },
 
