@@ -49,6 +49,12 @@ export interface Template {
 }
 
 // ---------------------------------------------------------------------------
+// Shared footer appended to every template's message except scrum-ytb.
+// Edit this one line to change the notice everywhere at once.
+// ---------------------------------------------------------------------------
+const NOTICE = `> :warning: **Notice:** Once you have seen this, kindly react to it.`;
+
+// ---------------------------------------------------------------------------
 // Add new templates here. Each becomes its own slash command
 // (deploy-commands.ts) and is handled automatically (index.ts) — no
 // per-template code needed there. Every template is a single one-step modal
@@ -100,7 +106,8 @@ export const templates: Template[] = [
       `**WHAT:**\n${v.what}\n\n` +
       `**WHO:**\n${bulletList(v.who)}\n\n` +
       `**WHEN:**\n${v.when}\n\n` +
-      `**WHERE:**\n${bulletList(v.where)}`,
+      `**WHERE:**\n${bulletList(v.where)}\n\n` +
+      NOTICE,
   },
 
   {
@@ -134,7 +141,8 @@ export const templates: Template[] = [
       `### :pencil: TASK ASSIGNMENT: ${v.taskName}\n` +
       `**Description:**\n* ${v.description}\n\n` +
       `**Assigned To:**\n${bulletList(v.assignedTo)}\n\n` +
-      `**Deadline:**\n* ${v.deadline}`,
+      `**Deadline:**\n* ${v.deadline}\n\n` +
+      NOTICE,
   },
 
   {
@@ -190,7 +198,8 @@ export const templates: Template[] = [
       `**Schedule:**\n* **Date:** ${v.date}\n\n` +
       `**Time Allocation**\n* ${v.timeAllocation}\n\n` +
       `**Meeting Agenda:**\n${bulletList(v.agenda)}\n\n` +
-      `**Reminders:**\n${bulletList(v.reminders)}`,
+      `**Reminders:**\n${bulletList(v.reminders)}\n\n` +
+      NOTICE,
   },
 
   {
@@ -224,7 +233,8 @@ export const templates: Template[] = [
       `### :clipboard: NEW SPRINT PLAN\n\n` +
       `**Sprint Number:** Sprint ${v.sprintNumber}\n\n` +
       `**Duration:** ${v.duration}\n\n` +
-      `**Sprint Goal:**\n${bulletList(v.sprintGoals)}`,
+      `**Sprint Goal:**\n${bulletList(v.sprintGoals)}\n\n` +
+      NOTICE,
   },
 
   {
@@ -324,11 +334,12 @@ export const templates: Template[] = [
       `**Attendees:**\n${bulletList(v.attendees)}\n` +
       `**Meeting Type:** ${v.meetingType}\n\n` +
       `---\n\n` +
-      `*Key Discussion Points*\n${bulletList(v.keyPoints)}\n\n` +
+      `**Key Discussion Points**\n${bulletList(v.keyPoints)}\n\n` +
       `---\n\n` +
-      `*Action Items*\n${bulletList(v.actionItems)}\n\n` +
+      `**Action Items**\n${bulletList(v.actionItems)}\n\n` +
       `---\n\n` +
-      `> :pencil2: **Minutes prepared by:** ${v.author}`,
+      `> :pencil2: **Minutes prepared by:** ${v.author}\n\n` +
+      NOTICE,
   },
 
   {
@@ -365,6 +376,7 @@ export const templates: Template[] = [
       `### :rocket: SPRINT RETROSPECTIVE: ${v.sprintNumber}\n\n` +
       `**WHAT WENT WELL?**\n* ${v.wentWell}\n\n` +
       `**WHAT DIDN'T GO WELL?**\n* ${v.didntGoWell}\n\n` +
-      `**WHAT CAN WE IMPROVE?**\n* ${v.improve}`,
+      `**WHAT CAN WE IMPROVE?**\n* ${v.improve}\n\n` +
+      NOTICE,
   },
 ];
