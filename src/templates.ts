@@ -331,9 +331,9 @@ export const templates: Template[] = [
     ],
     format: (v) =>
       `### :clipboard: MINUTES OF THE MEETING\n\n` +
+      `**Meeting Type:** ${v.meetingType}\n` +
       `**Date & Time:** ${formatNow()}\n` +
-      `**Attendees:**\n${bulletList(v.attendees)}\n` +
-      `**Meeting Type:** ${v.meetingType}\n\n` +
+      `**Attendees:**\n${bulletList(v.attendees)}\n\n` +
       `---\n\n` +
       `**Key Discussion Points**\n${bulletList(v.keyPoints)}\n\n` +
       `---\n\n` +
