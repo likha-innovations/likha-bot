@@ -2,9 +2,15 @@ import "dotenv/config";
 import { Client, GatewayIntentBits, Events, ModalBuilder } from "discord.js";
 import { templates } from "./templates.js";
 import { renderField, readField } from "./fields.js";
+import { startServer } from "./server.js";
 
 const { DISCORD_TOKEN } = process.env;
 if (!DISCORD_TOKEN) throw new Error("Missing DISCORD_TOKEN in .env");
+
+// Render (and similar host types) require the process to bind a port —
+// this has no effect on Discord functionality, it just keeps the Web
+// Service alive. See server.ts.
+startServer();
 
 // Only Guilds intent is needed — we never read message content, only
 // respond to slash commands and modal submits.
