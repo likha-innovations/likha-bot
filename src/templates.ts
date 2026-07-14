@@ -53,7 +53,7 @@ export interface Template {
 // Edit this one line to change the notice everywhere at once.
 // ---------------------------------------------------------------------------
 const NOTICE = `> :warning: **Notice:** Once you have seen this, kindly react to it.`;
-const TASK_NOTICE = `> :warning: **Notice:** Once you are done with the task, kindly react :white_check_mark: to this.`;
+const TASK_NOTICE = `> :warning: **Notice:** Once you are done with the task, kindly react  :white_check_mark:  to this.`;
 
 // ---------------------------------------------------------------------------
 // Add new templates here. Each becomes its own slash command
@@ -339,7 +339,7 @@ export const templates: Template[] = [
       `---\n\n` +
       `**Action Items**\n${bulletList(v.actionItems)}\n\n` +
       `---\n\n` +
-      `> :pencil2: **Minutes prepared by:** ${v.author}` +
+      `> :pencil2: **Minutes prepared by:** ${v.author}\n` +
       NOTICE,
   },
 
