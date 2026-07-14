@@ -18,27 +18,31 @@ export function bulletList(text: string, fallback = "None"): string {
 }
 
 /**
- * Current date/time formatted as "Day, Month 00, Year 00:00 AM/PM",
- * e.g. "Monday, July 13, 2026 09:41 AM". Used by templates whose date field
- * is system-generated instead of user-entered (scrum-ytb, scrum-mom).
+ * Current date/time in Philippine time (Asia/Manila, UTC+8), formatted as
+ * "Day, Month 00, Year 00:00 AM/PM", e.g. "Monday, July 13, 2026 09:41 AM".
+ * Used by templates whose date field is system-generated instead of
+ * user-entered (scrum-ytb, scrum-mom).
+ *
+ * Explicitly pins the timezone via Intl.DateTimeFormat instead of using
+ * Date's local getters (getHours(), getDay(), etc.), since those follow
+ * whatever timezone the host machine/VPS is set to — often UTC — which
+ * would silently shift these timestamps by 8 hours.
  */
 export function formatNow(): string {
-  const DAYS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-  const MONTHS = [
-    "January", "February", "March", "April", "May", "June",
-    "July", "August", "September", "October", "November", "December",
-  ];
+  const formatter = new Intl.DateTimeFormat("en-US", {
+    timeZone: "Asia/Manila",
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: true,
+  });
 
-  const now = new Date();
-  const day = DAYS[now.getDay()];
-  const month = MONTHS[now.getMonth()];
-  const date = String(now.getDate()).padStart(2, "0");
-  const year = now.getFullYear();
+  const parts = Object.fromEntries(
+    formatter.formatToParts(new Date()).map((p) => [p.type, p.value]),
+  );
 
-  let hours = now.getHours();
-  const minutes = String(now.getMinutes()).padStart(2, "0");
-  const period = hours >= 12 ? "PM" : "AM";
-  hours = hours % 12 || 12;
-
-  return `${day}, ${month} ${date}, ${year} ${hours}:${minutes} ${period}`;
+  return `${parts.weekday}, ${parts.month} ${parts.day}, ${parts.year} ${parts.hour}:${parts.minute} ${parts.dayPeriod}`;
 }

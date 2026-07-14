@@ -6,14 +6,35 @@ import { bulletList, formatNow } from "./utils.js";
 // short     -> single-line text input
 // paragraph -> multi-line text input (use with bulletList() in `format` for
 //              fields where the user should be able to enter several entries)
+// select    -> single-choice dropdown (StringSelectMenu); `options` sets the
+//              choices, and the chosen `value` comes back as the field's value
 //
 // Discord modals cap out at 5 top-level components, so every template's
 // `fields` array must have length <= 5.
 // ---------------------------------------------------------------------------
 
 export type FieldSpec =
-  | { kind: "short"; id: string; label: string; placeholder?: string; required?: boolean }
-  | { kind: "paragraph"; id: string; label: string; placeholder?: string; required?: boolean };
+  | {
+      kind: "short";
+      id: string;
+      label: string;
+      placeholder?: string;
+      required?: boolean;
+    }
+  | {
+      kind: "paragraph";
+      id: string;
+      label: string;
+      placeholder?: string;
+      required?: boolean;
+    }
+  | {
+      kind: "select";
+      id: string;
+      label: string;
+      options: { label: string; value: string }[];
+      required?: boolean;
+    };
 
 export interface Template {
   /** Becomes the slash command name, e.g. "gen-ann" -> /gen-ann */
@@ -39,12 +60,17 @@ export const templates: Template[] = [
     description: "Post an official announcement (5Ws format)",
     modalTitle: "Official Announcement",
     fields: [
-      { kind: "short", id: "title", label: "Announcement Title", required: true },
+      {
+        kind: "short",
+        id: "title",
+        label: "Announcement Title",
+        required: true,
+      },
       {
         kind: "paragraph",
         id: "what",
         label: "WHAT? (What is the announcement about)",
-        placeholder: "One point per line",
+        placeholder: "Freely type your announcement",
         required: true,
       },
       {
@@ -71,11 +97,10 @@ export const templates: Template[] = [
     ],
     format: (v) =>
       `### :loudspeaker: OFFICIAL ANNOUNCEMENT: ${v.title}\n` +
-      `**:mag: OVERVIEW (The 5Ws):**\n` +
-      `:question: **WHAT:**\n${bulletList(v.what)}\n\n` +
-      `:bust_in_silhouette: **WHO:**\n${bulletList(v.who)}\n\n` +
-      `:date: **WHEN:**\n  * ${v.when}\n\n` +
-      `:round_pushpin: **WHERE:**\n${bulletList(v.where)}`,
+      `**WHAT:**\n${v.what}\n\n` +
+      `**WHO:**\n${bulletList(v.who)}\n\n` +
+      `**WHEN:**\n${v.when}\n\n` +
+      `**WHERE:**\n${bulletList(v.where)}`,
   },
 
   {
@@ -84,7 +109,12 @@ export const templates: Template[] = [
     modalTitle: "Task Assignment",
     fields: [
       { kind: "short", id: "taskName", label: "Task Name", required: true },
-      { kind: "paragraph", id: "description", label: "Description", required: true },
+      {
+        kind: "paragraph",
+        id: "description",
+        label: "Description",
+        required: true,
+      },
       {
         kind: "paragraph",
         id: "assignedTo",
@@ -101,10 +131,10 @@ export const templates: Template[] = [
       },
     ],
     format: (v) =>
-      `### :tools: TASK ASSIGNMENT: ${v.taskName}\n\n` +
-      `**:pencil: Description:**\n* ${v.description}\n\n` +
-      `**:busts_in_silhouette: Assigned To:**\n${bulletList(v.assignedTo)}\n\n` +
-      `**:date: Deadline:**\n* ${v.deadline}`,
+      `###TASK ASSIGNMENT: ${v.taskName}\n\n` +
+      `**Description:**\n* ${v.description}\n\n` +
+      `**Assigned To:**\n${bulletList(v.assignedTo)}\n\n` +
+      `**Deadline:**\n* ${v.deadline}`,
   },
 
   {
@@ -112,8 +142,27 @@ export const templates: Template[] = [
     description: "Post a meeting notice",
     modalTitle: "Meeting Notice",
     fields: [
-      { kind: "short", id: "topic", label: "Meeting Topic", required: true },
-      { kind: "short", id: "date", label: "Date", placeholder: "Day, Month 00, Year", required: true },
+      {
+        kind: "select",
+        id: "topic",
+        label: "Meeting Topic",
+        required: true,
+        options: [
+          { label: "Daily Scrum", value: "Daily Scrum" },
+          { label: "Weekly Meeting", value: "Weekly Meeting" },
+          { label: "Realignment", value: "Realignment" },
+          { label: "Emergency", value: "Emergency" },
+          { label: "Scrum Retrospective", value: "Scrum Retrospective" },
+          { label: "Scrum Planning", value: "Scrum Planning" },
+        ],
+      },
+      {
+        kind: "short",
+        id: "date",
+        label: "Date",
+        placeholder: "Day, Month 00, Year",
+        required: true,
+      },
       {
         kind: "short",
         id: "timeAllocation",
@@ -149,7 +198,13 @@ export const templates: Template[] = [
     description: "Post a new sprint plan",
     modalTitle: "New Sprint Plan",
     fields: [
-      { kind: "short", id: "sprintNumber", label: "Sprint Number", placeholder: "e.g. 1", required: true },
+      {
+        kind: "short",
+        id: "sprintNumber",
+        label: "Sprint Number",
+        placeholder: "e.g. 1",
+        required: true,
+      },
       {
         kind: "short",
         id: "duration",
@@ -167,9 +222,9 @@ export const templates: Template[] = [
     ],
     format: (v) =>
       `### :clipboard: NEW SPRINT PLAN\n\n` +
-      `**:rocket: Sprint Number:** Sprint ${v.sprintNumber}\n\n` +
-      `**:hourglass_flowing_sand: Duration:** ${v.duration}\n\n` +
-      `**:dart: Sprint Goal:**\n${bulletList(v.sprintGoals)}`,
+      `**Sprint Number:** Sprint ${v.sprintNumber}\n\n` +
+      `**Duration:** ${v.duration}\n\n` +
+      `**Sprint Goal:**\n${bulletList(v.sprintGoals)}`,
   },
 
   {
@@ -177,7 +232,13 @@ export const templates: Template[] = [
     description: "Post your Yesterday/Today/Blockers scrum update",
     modalTitle: "Scrum YTB",
     fields: [
-      { kind: "short", id: "name", label: "Name", placeholder: "@Name", required: true },
+      {
+        kind: "short",
+        id: "name",
+        label: "Name",
+        placeholder: "@Name",
+        required: true,
+      },
       {
         kind: "paragraph",
         id: "yesterday",
@@ -185,7 +246,13 @@ export const templates: Template[] = [
         placeholder: "One item per line",
         required: true,
       },
-      { kind: "paragraph", id: "today", label: "Today", placeholder: "One item per line", required: true },
+      {
+        kind: "paragraph",
+        id: "today",
+        label: "Today",
+        placeholder: "One item per line",
+        required: true,
+      },
       {
         kind: "paragraph",
         id: "blockers",
@@ -198,9 +265,9 @@ export const templates: Template[] = [
       `### :white_check_mark: SCRUM YTB\n\n` +
       `**Name:** ${v.name}\n` +
       `**Date:** ${formatNow()}\n\n` +
-      `:rewind: **Y (Yesterday):**\n${bulletList(v.yesterday)}\n\n` +
-      `:fast_forward: **T (Today):**\n${bulletList(v.today)}\n\n` +
-      `:octagonal_sign: **B (Blockers):**\n${bulletList(v.blockers)}`,
+      `**Y (Yesterday):**\n${bulletList(v.yesterday)}\n\n` +
+      `**T (Today):**\n${bulletList(v.today)}\n\n` +
+      `**B (Blockers):**\n${bulletList(v.blockers)}`,
   },
 
   {
@@ -215,7 +282,20 @@ export const templates: Template[] = [
         placeholder: "One name per line",
         required: true,
       },
-      { kind: "paragraph", id: "topics", label: "Topic(s)", placeholder: "One topic per line", required: true },
+      {
+        kind: "select",
+        id: "meetingType",
+        label: "Meeting Type",
+        required: true,
+        options: [
+          { label: "Daily Scrum", value: "Daily Scrum" },
+          { label: "Weekly Meeting", value: "Weekly Meeting" },
+          { label: "Realignment", value: "Realignment" },
+          { label: "Emergency", value: "Emergency" },
+          { label: "Scrum Retrospective", value: "Scrum Retrospective" },
+          { label: "Scrum Planning", value: "Scrum Planning" },
+        ],
+      },
       {
         kind: "paragraph",
         id: "keyPoints",
@@ -240,13 +320,13 @@ export const templates: Template[] = [
     ],
     format: (v) =>
       `### :clipboard: MINUTES OF THE MEETING\n\n` +
-      `**:date: Date & Time:** ${formatNow()}\n\n` +
-      `**:busts_in_silhouette: Attendees:**\n${bulletList(v.attendees)}\n\n` +
-      `**:dart: Topic(s):**\n${bulletList(v.topics)}\n\n` +
-      `---\n\n` +
-      `### :mag: KEY DISCUSSION POINTS\n${bulletList(v.keyPoints)}\n\n` +
-      `---\n\n` +
-      `### :white_check_mark: ACTION ITEMS\n${bulletList(v.actionItems)}\n\n` +
+      `**Date & Time:** ${formatNow()}\n` +
+      `**Attendees:**\n${bulletList(v.attendees)}\n` +
+      `**Meeting Type:** ${v.meetingType}\n` +
+      `---\n` +
+      `###KEY DISCUSSION POINTS\n${bulletList(v.keyPoints)}\n` +
+      `---\n` +
+      `###ACTION ITEMS\n${bulletList(v.actionItems)}\n\n` +
       `---\n` +
       `> :pencil2: **Minutes prepared by:** ${v.author}`,
   },
@@ -256,15 +336,35 @@ export const templates: Template[] = [
     description: "Post a sprint retrospective",
     modalTitle: "Sprint Retrospective",
     fields: [
-      { kind: "short", id: "sprintNumber", label: "Sprint Number", required: true },
-      { kind: "paragraph", id: "wentWell", label: "What went well?", required: true },
-      { kind: "paragraph", id: "didntGoWell", label: "What didn't go well?", required: true },
-      { kind: "paragraph", id: "improve", label: "What can we improve?", required: true },
+      {
+        kind: "short",
+        id: "sprintNumber",
+        label: "Sprint Number",
+        required: true,
+      },
+      {
+        kind: "paragraph",
+        id: "wentWell",
+        label: "What went well?",
+        required: true,
+      },
+      {
+        kind: "paragraph",
+        id: "didntGoWell",
+        label: "What didn't go well?",
+        required: true,
+      },
+      {
+        kind: "paragraph",
+        id: "improve",
+        label: "What can we improve?",
+        required: true,
+      },
     ],
     format: (v) =>
       `### :rocket: SPRINT RETROSPECTIVE: ${v.sprintNumber}\n\n` +
-      `:green_circle: **WHAT WENT WELL?**\n* ${v.wentWell}\n\n` +
-      `:red_circle: **WHAT DIDN'T GO WELL?**\n* ${v.didntGoWell}\n\n` +
-      `:seedling: **WHAT CAN WE IMPROVE?**\n* ${v.improve}`,
+      `**WHAT WENT WELL?**\n* ${v.wentWell}\n\n` +
+      `**WHAT DIDN'T GO WELL?**\n* ${v.didntGoWell}\n\n` +
+      `**WHAT CAN WE IMPROVE?**\n* ${v.improve}`,
   },
 ];

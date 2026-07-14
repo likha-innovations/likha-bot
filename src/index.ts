@@ -20,7 +20,9 @@ client.on(Events.InteractionCreate, async (interaction) => {
   try {
     // Slash command typed -> show that template's single modal.
     if (interaction.isChatInputCommand()) {
-      const template = templates.find((t) => t.commandName === interaction.commandName);
+      const template = templates.find(
+        (t) => t.commandName === interaction.commandName,
+      );
       if (!template) return;
 
       await interaction.showModal(buildModal(template.commandName));
@@ -52,9 +54,17 @@ client.on(Events.InteractionCreate, async (interaction) => {
     // 45-character limit) throws before any response is sent, and Discord
     // just shows "The application did not respond" with no clue why.
     console.error("Interaction failed:", err);
-    if (interaction.isRepliable() && !interaction.replied && !interaction.deferred) {
+    if (
+      interaction.isRepliable() &&
+      !interaction.replied &&
+      !interaction.deferred
+    ) {
       await interaction
-        .reply({ content: "Something went wrong handling that. Check the bot logs for details.", ephemeral: true })
+        .reply({
+          content:
+            "Something went wrong handling that. Check the bot logs for details.",
+          ephemeral: true,
+        })
         .catch(() => {});
     }
   }
